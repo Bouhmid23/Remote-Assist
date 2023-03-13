@@ -1,4 +1,4 @@
-var connection = new WebSocket("ws://192.168.3.183:3000");
+var connection = io("https://remote-assist.onrender.com/");
 var username;
 connection.onerror = function () {
     console.log("connection.onerror");

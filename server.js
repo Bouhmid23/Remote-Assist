@@ -1,5 +1,5 @@
 
-var WebSocketServer = require('ws').Server;
+var WebSocketServer = require('socket.io').Server;
 var ws = new WebSocketServer({ port: 3000 });
 /* to store the connection details */
 var users = {};
