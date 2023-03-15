@@ -1,8 +1,7 @@
 
 // WebRTC related Functions (Creation of RTC peer connection, Offer, ICE, SDP, Answer etc..)
-var connection = io("https://remote-assist.onrender.com/");
+//const connection = io("ws://192.168.3.183:3000");
 var Send_dataChannel, connectedUser, Receive_dataChannel;
-var username;
 var chat_window_flag = false;
 var incoming_popup_set = false, outgoing_popup_set = false;
 var conn_offer;

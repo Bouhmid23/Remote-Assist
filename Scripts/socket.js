@@ -1,19 +1,20 @@
-var connection = io("https://remote-assist.onrender.com/");
-var username;
+const connection = new WebSocket("ws://192.168.1.20:3000");
+
+ //This function will check the websocket connection error.
 connection.onerror = function () {
     console.log("connection.onerror");
     document.getElementById('loginerror').innerText = "Server is down.. please try later";
     populate_error("server");
 };
 
- // This function will check the websocket connection open.
- // When connection sucessfull , the user name send to server.
+ //This function will check the websocket connection open.
+ //When connection sucessfull , the user name send to server.
 connection.onopen = function () {
     console.log("connection is fine");
     setInterval(ping, 10000);
 };
 
- // This function will handle all the messages from server.
+ //This function will handle all the messages from server.
  // Main functiion to receive data from server.
 connection.onmessage = function (message) {
     console.log("message from server = ", message.data);

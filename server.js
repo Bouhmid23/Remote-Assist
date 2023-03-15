@@ -1,16 +1,18 @@
 
-var WebSocketServer = require('socket.io').Server;
-var ws = new WebSocketServer({ port: 3000 });
+var WebSocketServer = require('ws').Server;
+var wss = new WebSocketServer({ port: 3000 },{cors:{
+	origin: "*",
+}});
 /* to store the connection details */
 var users = {};
 /* to store the user list details */
 var map = new Map();
 
-ws.on('listening', function () {
+wss.on('listening', function () {
 	console.log(`Server started with port ${this.address().port}`);
 });
 
-ws.on('connection', function (connection) {
+wss.on('connection', function (connection) {
 	/* Sucessful connection */
 	console.log("User has connected");
 	connection.on('message', function (message) {
@@ -246,6 +248,7 @@ ws.on('connection', function (connection) {
 /* function to send the userlist */
 function sendUpdatedUserlist(conn, message) {
 	conn.send(JSON.stringify({ type: "server_userlist", name: message }));
+
 }
 /* function to send the message */
 function sendTo(conn, message) {
