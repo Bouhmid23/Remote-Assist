@@ -1,17 +1,16 @@
-
+//const server=require('https')
+const cors=require('cors')
 var WebSocket = require('ws')
 const httpsServer=require('https').createServer
 /*
 const fs = require('fs')
 var cheminKEY = "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/https/key.pem"
 var cheminCERT = "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/https/cert.pem"
-*/
 const server=httpsServer({
-	
 })
+*/
 
-var wss = new WebSocket.Server(/*{server:server},*/{port:443},
-{cors})
+const wss = new WebSocket.Server({port:443},{cors:origin='*'})
 
 /* to store the connection details */
 var users = {};
