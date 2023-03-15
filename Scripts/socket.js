@@ -1,4 +1,4 @@
-const connection = new WebSocket("ws://192.168.1.20:3000");
+const connection = new WebSocket("ws://192.168.1.20:443");
 
  //This function will check the websocket connection error.
 connection.onerror = function () {

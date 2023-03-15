@@ -1,0 +1,12 @@
+
+{
+    "liveServer.settings.port": 8080,
+    "liveServer.settings.root": "/",
+    "liveServer.settings.CustomBrowser": "chrome",
+    "liveServer.settings.https": {
+      "enable": false,
+      "cert": "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/https/cert.pem",
+      "key": "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/https/key.pem",
+      "passphrase": "12345"
+    }
+    }
