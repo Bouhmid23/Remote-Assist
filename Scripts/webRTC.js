@@ -1,6 +1,4 @@
-
-// WebRTC related Functions (Creation of RTC peer connection, Offer, ICE, SDP, Answer etc..)
-//const connection = io("ws://192.168.3.183:3000");
+// WebRTC 
 var Send_dataChannel, connectedUser, Receive_dataChannel;
 var chat_window_flag = false;
 var incoming_popup_set = false, outgoing_popup_set = false;

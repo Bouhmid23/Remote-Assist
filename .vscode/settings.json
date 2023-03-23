@@ -1,6 +1,6 @@
 
 {
-    "liveServer.settings.port": 8080,
+    "liveServer.settings.port": 5500,
     "liveServer.settings.root": "/",
     "liveServer.settings.CustomBrowser": "chrome",
     "liveServer.settings.https": {
@@ -8,5 +8,10 @@
       "cert": "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/https/cert.pem",
       "key": "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/https/key.pem",
       "passphrase": "12345"
-    }
+    },
+    "liveServer.settings.proxy": {
+      "enable": false,
+      "baseUri": "/api", 
+      "proxyUri": "https://127.0.0.1:5500/"
+  }
     }

@@ -1,5 +1,4 @@
-﻿//const connection = io("ws://192.168.3.183:3000");
-var Send_dataChannel, connectedUser, Receive_dataChannel;
+﻿var Send_dataChannel, connectedUser, Receive_dataChannel;
 let username;
 var title = document.title;
 var chat_window_flag = false;
