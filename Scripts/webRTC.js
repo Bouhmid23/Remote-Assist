@@ -154,8 +154,8 @@ function errorMessage(message, e) {
 function icecandidateAdded(ev) {
     if (ev.candidate) {
         send({
-            type: "candidate",
-            candidate: ev.candidate
+            "type": "candidate",
+            "candidate": ev.candidate
         });
         console.log("ICE candidate has send to Server ..");   
     }
@@ -225,8 +225,8 @@ async function onCreateOfferSuccess(desc) {
       onSetLocalSuccess(peerConnection);
       console.log("sending offer to server..");
          send({
-             type: "offer",
-             offer: desc
+             "type": "offer",
+             "offer": desc
          });
     } catch (e) {
       onSetSessionDescriptionError(e);
@@ -274,8 +274,8 @@ async function onCreateAnswerSuccess(desc) {
     conn_answer = desc;
     console.log("sending answer to server..");
     send({
-             type: "answer",
-             answer: conn_answer
+             "type": "answer",
+             "answer": conn_answer
         });   
   }
 
@@ -309,7 +309,7 @@ function onSetSessionDescriptionError(error) {
         onSetSessionDescriptionError(e);
       }
     send({
-        type: "ready"
+        "type": "ready"
     });
 }
 
@@ -431,7 +431,7 @@ function Delete_webrtc_connection()
 //This function will send messages to server when user reject the offer from other user.
 function reject_answer() {
     send({
-        type: "busy"
+        "type": "busy"
     });
     clear_incoming_modal_popup();
     chat_window_flag = false;
@@ -441,7 +441,7 @@ function reject_answer() {
 //This function will send message to server if user want to leave from the room.
 function Leaveroom() {
     send({
-        type: "leave"
+        "type": "leave"
     });
 }
 
@@ -454,12 +454,10 @@ function call_user(name) {
     else {
         var otherUsername = name;
         connectedUser = otherUsername;
-
         if (otherUsername.length > 0) {
-            
             send({
-                type: "want_to_call",
-                name: otherUsername
+                "type": "want_to_call",
+                "name": otherUsername
             });
         }
     }

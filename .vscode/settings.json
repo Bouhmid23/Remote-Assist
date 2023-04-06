@@ -5,8 +5,8 @@
     "liveServer.settings.CustomBrowser": "chrome",
     "liveServer.settings.https": {
       "enable": false,
-      "cert": "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/https/cert.pem",
-      "key": "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/https/key.pem",
+      "cert": "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/cert.pem",
+      "key": "/Users/bouhm/OneDrive/Bureau/WebRTC_Video_call/key.pem",
       "passphrase": "12345"
     },
     "liveServer.settings.proxy": {

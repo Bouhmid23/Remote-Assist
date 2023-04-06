@@ -1,27 +1,27 @@
-const EndPoint="ws://192.168.3.183:3000"
-const connection = new WebSocket(EndPoint,);
+const EndPoint="wss://python-server-http.onrender.com"
+const connection = new WebSocket(EndPoint);
 
 //This function will check the websocket connection error.
 connection.onerror= function (error) {
     console.log("connection.onerror",error);
     document.getElementById('loginerror').innerText = "Server is down.. please try later";
-    populate_error("server");
+    populate_error("server")
 };
 
  //This function will check the websocket connection open.
  //When connection sucessfull , the user name send to server.
 connection.onopen= function () {
     console.log("connection is fine")
-    setInterval(ping, 10000);
+    setInterval(ping, 10000)
 };
 
  //This function will handle all the messages from server.
  // Main functiion to receive data from server.
 connection.onmessage= function (message) {
-    console.log("message from server = ", message.data);
-    var data = JSON.parse(message.data);
+    console.log("message from server = ", message.data)
+    var reason=message.data.toString()
+    var data = JSON.parse(reason)
     switch (data.type) {
-
         case "server_pong":
             if (data.name == "pong") {
                 pong();
@@ -77,4 +77,11 @@ connection.onmessage= function (message) {
         default:
             break
     }
+}
+
+//This function will send the user message to server Sending message will be in JSON format.
+function send(message) {
+    if (connectedUser) {
+        message.name = connectedUser}
+    connection.send(JSON.stringify(message))
 }

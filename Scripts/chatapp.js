@@ -180,7 +180,6 @@ function wordflick (words) {
     skip_count = 0,
     skip_delay = 15,
     speed = 70;
-
     return window.setInterval(function () {
       if (forwards) {
         if (offset >= words[i].length) {
@@ -548,21 +547,14 @@ function Update_user_status(id_name, value)
         // handle the user status 
         case "online":
             document.getElementById(id_name).classList.replace('label-danger', 'label-success');
-            break;
+            break
         case "busy":
             document.getElementById(id_name).classList.replace('label-success','label-danger'); 
-            break;
+            break
         default:
             document.getElementById(id_name).classList.add('label-success');
-            break;
+            break
     }
 }
 
-//This function will send the user message to server Sending message will be in JSON format.
-function send(message) {
-    if (connectedUser) {
-        message.name = connectedUser;
-    }
-    
-    connection.send(JSON.stringify(message));
-};
+
