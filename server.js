@@ -21,14 +21,14 @@ function handle_login(data,connection){
 		users[data.name] = connection;
 		connection.name = data.name;
 		connection.otherName = null;
-		/* store the connection name in the userlist */
+		/* store the connection name in the userList */
 		map.set(data.name,'online')
-		/* send response to client back with login sucess */
+		/* send response to client back with login success */
 		sendTo(connection, { "type": "server_login", "success": true })
-		console.log("Login sucess")
+		console.log("Login success")
 		/* send updated user lists to all users */
 		for (var i in users) {
-			sendUpdatedUserlist(users[i],[...map])}}
+			sendUpdatedUserList(users[i],[...map])}}
 		}
 
 function handle_answer(data){
@@ -45,22 +45,22 @@ function handle_offer(data,connection){
 		var conn = users[data.name];
 		if (conn == null) {
 			//Error handling 
-			sendTo(connection, { "type": "server_nouser", "success": false });
+			sendTo(connection, { "type": "server_no_user", "success": false });
 		}
 		else if (conn.otherName == null) {
-			//When user is free and availble for the offer 
+			//When user is free and avaialble for the offer 
 			//Send the offer to peer user 
 			sendTo(conn, { "type": "server_offer", "offer": data.offer, "name": connection.name });
 		}
 		else {
 			//User has in the room, User is can't accept the offer 
-			sendTo(connection, { "type": "server_alreadyinroom", "success": true, "name": data.name });
+			sendTo(connection, { "type": "server_already_in_room", "success": true, "name": data.name });
 		}
 	}
 	else {
 		//Error handling with invalid query 
-		console.log("offer -> server_nouser");
-		sendTo(connection, { "type": "server_nouser", "success": false });
+		console.log("offer -> server_no_user")
+		sendTo(connection, { "type": "server_no_user", "success": false })
 	}
 }
 function handle_candidate(data){
@@ -76,15 +76,15 @@ function handle_leave(data,connection){
 	var conn = users[data.name];
 	if (conn != null) {
 		//Send response back to users who are in the room 
-		sendTo(conn, { "type": "server_userwanttoleave" });
-		sendTo(connection, { "type": "server_userwanttoleave" });
+		sendTo(conn, { "type": "server_user_want_to_leave" });
+		sendTo(connection, { "type": "server_user_want_to_leave" });
 		map.set(data.name,'online');
 		map.set(connection.name,'online');
 		//Update the connection status with available 
 		conn.otherName = null;
 		connection.otherName = null;
 		for (var i in users) {
-			sendUpdatedUserlist(users[i], [...map])}
+			sendUpdatedUserList(users[i], [...map])}
 		console.log("end room");
 	}
 }
@@ -93,27 +93,24 @@ function handle_busy(data){
 	var conn = users[data.name];
 	if (conn != null) {
 		//Send response back to user 
-		sendTo(conn, { "type": "server_busyuser" });
+		sendTo(conn, { "type": "server_busy_user" });
 	}
 }
 function handle_want_to_call(data,connection){
 	var conn = users[data.name];
 					if (conn != null) {
-						if((conn.otherName != null) && map.get(data.name) == "busy")
-						{
+						if((conn.otherName != null) && map.get(data.name) == "busy"){
 							//User has in the room, User is can't accept the offer 
-							sendTo(connection, { "type": "server_alreadyinroom", "success": true, "name": data.name });
+							sendTo(connection, { "type": "server_already_in_room", "success": true, "name": data.name });
 						}
-						else
-						{
-							//User is avilable, User can accept the offer 
-							sendTo(connection, { "type": "server_alreadyinroom", "success": false, "name": data.name });
+						else{
+							//User is available, User can accept the offer 
+							sendTo(connection, { "type": "server_already_in_room", "success": false, "name": data.name });
 						}
 					}
-					else
-					{
+					else{
 						//Error handling with invalid query 
-						sendTo(connection, { "type": "server_nouser", "success": false });
+						sendTo(connection, { "type": "server_no_user", "success": false });
 					}
 }
 function handle_ready(data,connection){
@@ -126,11 +123,11 @@ function handle_ready(data,connection){
 		map.set(data.name,'busy');
 		map.set(connection.name,'busy');
 		/* Send response to each users */
-		sendTo(conn, { "type": "server_userready", "success": true, "peername": connection.name });
-		sendTo(connection, { "type": "server_userready", "success": true, "peername": conn.name });
+		sendTo(conn, { "type": "server_user_ready", "success": true, "peer_name": connection.name });
+		sendTo(connection, { "type": "server_user_ready", "success": true, "peer_name": conn.name });
 		/* Send updated user list to all existing users */
 		for (var i in users) {
-			sendUpdatedUserlist(users[i], [...map]);
+			sendUpdatedUserList(users[i], [...map]);
 		}
 	}
 }
@@ -142,7 +139,7 @@ function handle_quit(data,connection){
 		map.delete(quit_user);
 		/* Send updated user list to all existing users */
 		for (var i in users) {
-			sendUpdatedUserlist(users[i], [...map]);
+			sendUpdatedUserList(users[i], [...map]);
 		}
 	}
 }
@@ -161,19 +158,19 @@ function handle_close(connection){
 					conn.otherName = null;
 					connection.otherName = null;
 					/* Send the response back to peer user */
-					sendTo(conn, { "type": "server_exitfrom" });
+					sendTo(conn, { "type": "server_exit_from" });
 					map.set(conn.name,'online');
 				}
 			}
 			/* Send the updated userlist to all the existing users  */
 			for (var i in users) {
-				sendUpdatedUserlist(users[i], [...map])
+				sendUpdatedUserList(users[i], [...map])
 			}
 		}
 }
 /* function to send the userlist */
-function sendUpdatedUserlist(conn, message) {
-	conn.send(JSON.stringify({ "type": "server_userlist", "name": message }));
+function sendUpdatedUserList(conn, message) {
+	conn.send(JSON.stringify({ "type": "server_user_list", "name": message }));
 }
 
 /* function to send the message */
@@ -182,7 +179,7 @@ function sendTo(conn, message) {
 }
 
 /* function to check the message is JSON or not */
-function checkisJson(str) {
+function checkIsJson(str) {
     try {
         JSON.parse(str)
     } catch (e) {
@@ -191,11 +188,11 @@ function checkisJson(str) {
     return true
 }
 wss.on('connection', function (connection) {
-	//Sucessful connection
+	//Successful connection
 	console.log("User has connected")
 	connection.on('message', function (message) {
-		var isjsonstring = checkisJson(message);
-		if(isjsonstring == true)
+		var isJsonString = checkIsJson(message);
+		if(isJsonString == true)
 		{// Parse the messages from client 
 			var data = JSON.parse(message)
 			switch (data.type) {
@@ -250,8 +247,8 @@ wss.on('connection', function (connection) {
 			}
 		}
 		else{
-			//ping from client, so repond with pong to get server is alive.
-			if(message == "clientping"){
+			//ping from client, so response with pong to get server is alive.
+			if(message == "client_ping"){
 				sendTo(connection, { type: "server_pong", name: "pong" })
 			}
 		}

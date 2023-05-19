@@ -4,25 +4,27 @@
     <meta charset="utf-8"/>
     <title>Remote Assist</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="stylesheet" href="css/font.css">
+    <link rel="font" href="fonts/fa-regular-400.ttf">
+    <link rel="font" href="fonts/fa-regular-400.woff">
+    <link rel="font" href="fonts/fa-regular-400.woff2">
     <link href="css/bootstrap-4.6.2.min.css" rel="stylesheet" />
     <link href="css/style.css" rel="stylesheet"/>
     <link rel="shortcut icon" href="#">
 </head>
 
 <body>
-    <script src="https://cdn.socket.io/4.5.4/socket.io.js"></script>
     <span class="top"></span>
     <!--Div for Login page -->
     <div id="signupStart" class="login-dark card" style="margin-top: -8rem;">
         <form method="post" id="signup">
             <h1 class="icon" style="margin-bottom: 5rem; text-align: center; ">Login Form</h1>
             <div class="illustration"></div>
-            <div class="form-group"><input class="form-control" required="" name="Userame" placeholder="Userame"></div>
+            <div class="form-group"><input class="form-control" required="" name="Username" placeholder="Username"></div>
             <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Log In</button></div>
             <p class="forgot">Type a random username and login</p>
             <!--Server Down / Login error Message-->
-            <p id="loginerror"style="color: red;" class="forgot"></p>
+            <p id="login_error"style="color: red;" class="forgot"></p>
         </form>
     </div>
     <div class="container-fluid bg-white chatbox shadow-lg rounded">
@@ -37,7 +39,7 @@
                             </div>
                             <div class="col-5 col-sm-5 col-md-5 col-lg-6">
                                 <div class="name" id="divChatName_username"></div>
-                                <div id="clientuserchatheader"><span id="clientuser_status" class="indicator label-success"></span>online</div>
+                                <div id="clientuserchatheader"><span id="client_user_status" class="indicator label-success"></span>online</div>
                             </div>
 
                             <div class="col-2 col-sm-2 col-md-2">
@@ -45,8 +47,8 @@
                         </div>
                     </div>
                     <!--Online User List-->
-                    <div class="card-header" id="onlineusers"></div>
-                    <ul class="list-group list-group-flush" id="lstChat"></ul>
+                    <div class="card-header" id="online_users"></div>
+                    <ul class="list-group list-group-flush" id="list_Chat"></ul>
                 </div>
             </div> 
             <div class="col-md-9 pl-0" id="side-2">
@@ -61,12 +63,12 @@
                                 <img src="images/pp.png" id="imgChat" class="rounded-circle profile-pic" />
                             </div>
                             <div class="col-5 col-sm-5 col-md-5 col-lg-7">
-                                <div class="name" id="divChatName_peername"></div>
-                                <div id="peeruserchatheader"><span id="peeruser_status" class="indicator label-success"></span>online</div>
+                                <div class="name" id="divChatName_peer_name"></div>
+                                <div id="peeruserchatheader"><span id="peer_user_status" class="indicator label-success"></span>online</div>
                             </div>
                             <div class="col-4 col-sm-4 col-md-4 col-lg-3 icon">
                                 <span class="leaveroom">
-                                    <button type="button" id="leaveroom" onclick="Leaveroom()"
+                                    <button type="button" id="leaveroom" onclick="Leave_room()"
                                         class="btn btn-danger btn-lg">
                                         <i class="btn-danger btn material-icons" style="color:white">close</i>
                                         <!--<span class="leve_room">Leave Room</span>-->
@@ -95,7 +97,6 @@
     <script src="Scripts/jquery-3.4.1.min.js"></script>
     <script src="Scripts/bootstrap.bundle.min.js"></script>
     <script src="Scripts/popper-1.14.7.min.js"></script>
-
     <script src="Scripts/chatapp.js"></script>
     <script src="Scripts/webRTC.js"></script>
     <script src="Scripts/socket.js"></script>

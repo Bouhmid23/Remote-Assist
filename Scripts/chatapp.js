@@ -1,37 +1,15 @@
-﻿var Send_dataChannel, connectedUser, Receive_dataChannel;
-let username;
-var title = document.title;
-var chat_window_flag = false;
-var incoming_popup_set = false, outgoing_popup_set = false;
-var conn_offer;
-var conn_answer;
-var id_wordflick;
-var flag_send_datachannel;
-var stream;
-var m_client_Video;
-var count_message = 0;
-const offerOptions = {
-    offerToReceiveAudio: 1,
-    offerToReceiveVideo: 1
-};
-let current_client_stream;
-let peerConnection;
-var configuration = {
-    "iceServers": [
-        {
-            "urls": "stun:stun.1.google.com:19302"
-        },
-        {
-            urls: 'turn:192.158.29.39:3478?transport=tcp',
-            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-            username: '28224511:1379330808'
-        }
-    ]
-};
+﻿let username
+var title = document.title
+var chat_window_flag = false
+var incoming_popup_set = false, outgoing_popup_set = false
+var id_wordFlick
+var stream
+var count_message = 0
+let current_client_stream
 
 // Set the name of the hidden property and the change event for visibility
 if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
-    hidden = "hidden";
+    hidden = "hidden"
     visibilityChange = "visibilitychange";
 } else if (typeof document.msHidden !== "undefined") {
     hidden = "msHidden";
@@ -52,7 +30,7 @@ function handleVisibilityChange() {
         }
         else
         {
-             document.title = title;
+            document.title = title;
         }
     } else {
         // if the page is shown, clear the message count
@@ -63,42 +41,42 @@ function handleVisibilityChange() {
 
 // Warn if the browser doesn't support addEventListener or the Page Visibility API
 if (typeof document.addEventListener === "undefined" || hidden === undefined) {
-    console.log("This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
-  } else {
+    console.log("This demo requires a browser, such as Google Chrome or Firefox, that supports the Page Visibility API.")
+} else {
     // Handle page visibility change
-    document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    document.addEventListener(visibilityChange, handleVisibilityChange, false)
 }
 
-
 //Functions related to login form
- const form  = document.getElementById('signup');
-  //This is a click event when press enter from keybord
+const form  = document.getElementById('signup');
+  //This is a click event when press enter from keyboard
   // accept key event from keyboard
   // process the send message function
-   document.addEventListener('keydown', function (key) {
+    document.addEventListener('keydown', function (event) {
+        const key=event.key || event.keyCode
        //press enter key only allow when the chat window enable
-      if ((key.which === 13) && (chat_window_flag == true)) {
-          SendMessage();
-      }
-  });
+        if ((key === 13 || key=='Enter') && (chat_window_flag == true)) {
+            SendMessage();
+    }
+})
 
   // This function will handle the login from UI
   // If it is success, it will initiate the connection.
- form.addEventListener('submit', (event) => {
+form.addEventListener('submit', (event) => {
      // stop form submission
-     event.preventDefault();
+    event.preventDefault();
      // handle the form data
-     var username_obj = form.elements['Userame'];
-     username = username_obj.value; 
-     document.getElementById('divChatName_username').innerHTML = username;
-     send({
-         type: "login",
-         name: username
-     });
- });
+    var username_obj = form.elements['Username']
+    username=username_obj.value
+    document.getElementById('divChatName_username').innerHTML = username;
+    send({
+        type: "login",
+        name: username
+    })
+})
 
  //This jQuery function will check the modal popup.
- //If the popup is still avaible after 30 second , then
+ //If the popup is still available after 30 second , then
  //it will be forcefully remove from screen and update to user.
 $('#modalNotificationList').on('show.bs.modal', function () {
     var myModal = $(this);
@@ -106,14 +84,14 @@ $('#modalNotificationList').on('show.bs.modal', function () {
     myModal.data('hideInterval', setTimeout(function () {
         if (chat_window_flag != true && outgoing_popup_set == true) {
             myModal.modal('hide').data('bs.modal', null);
-            populate_error("noresponse");
+            populate_error("no_response");
             outgoing_popup_set = false;
         }
     }, 30000));
 });
 
  //This jQuery function will check the modal popup.
- //If the popup is still avaible after 30 second , then
+ //If the popup is still available after 30 second , then
  //it will be forcefully remove from screen and update to user.
 $('#incoming_call_Modal').on('show.bs.modal', function () {
     var myModal = $(this);
@@ -121,7 +99,7 @@ $('#incoming_call_Modal').on('show.bs.modal', function () {
     myModal.data('hideInterval', setTimeout(function () {
         if (chat_window_flag != true && incoming_popup_set == true) {
             myModal.modal('hide').data('bs.modal', null);
-            populate_error("noresponse");
+            populate_error("no_response");
             outgoing_popup_set = false;
         }
     }, 30000));
@@ -141,7 +119,7 @@ function create_request_room_Modal(name) {
         '<div class="row intro-banner-vdo-play-btn pinkBg"><i class="glyphicon glyphicon-play whiteText" aria-hidden="true"></i>'+
         '<img src="images/pp.png" class="friend-pic-new rounded-circle"/><span class="ripple pinkBg"></span><span class="ripple pinkBg"></span><span class="ripple pinkBg"></span></div>'+
         '<div id="incoming-call-page" class="page text-center">' +
-        '<div id="dynamictext" class="word"></div>' +
+        '<div id="dynamic_text" class="word"></div>' +
         '<div class="row incoming-button-calls">' +
         '<div class="col-xs-2">' +
         '<button style="margin-right:16px" class="btn btn-primary btn-lg" id="incoming-accpt-request" type="button" onclick="make_answer()">' +
@@ -149,7 +127,7 @@ function create_request_room_Modal(name) {
         '</button>' +
         '</div>' +
         '<div class="col-xs-2">' +
-        '<button style="margin-right:16px" data-dismiss="modal" class="btn btn-danger btn-lg" id="incoming-end-call" type="button" onclick="reject_answer()">' +
+        '<button style="margin-right:16px" data-dismiss="modal" class="btn btn-danger btn-lg" id="incoming-end-call" type="button" onclick=`reject_answer()`>' +
         '<span class="glyphicon glyphicon-phone-alt"></span>Reject' +
         '</button>' +
         '</div>' +
@@ -162,16 +140,16 @@ function create_request_room_Modal(name) {
         '</div>';
 
     document.getElementById('incoming_call_Modal').innerHTML = html;
-    document.getElementById('dynamictext').innerText = "";
+    document.getElementById('dynamic_text').innerText = "";
     var string = name +" is requesting for a chat ..";
     var words = [string];
-    console.log("calling wordflick ");
-    id_wordflick = wordflick(words);
+    console.log("calling wordFlick ");
+    id_wordFlick = wordFlick(words);
     $("#incoming_call_Modal").modal('show');
     incoming_popup_set = true;
 }
 
-function wordflick (words) {
+function wordFlick (words) {
     var part ='',
     i = 0,
     offset = 0,
@@ -181,46 +159,34 @@ function wordflick (words) {
     skip_delay = 15,
     speed = 70;
     return window.setInterval(function () {
-      if (forwards) {
-        if (offset >= words[i].length) {
-          ++skip_count;
-          if (skip_count == skip_delay) {
-            forwards = false;
-            skip_count = 0;
-          }
-        }
-      }
-      else {
-        if (offset == 0) {
-          forwards = true;
-          i++;
-          offset = 0;
-          if (i >= len) {
-            i = 0;
-          }
-        }
-      }
-      part = words[i].substr(0, offset);
-      if (skip_count == 0) {
         if (forwards) {
-          offset++;
-        }
+            if (offset >= words[i].length) {
+                ++skip_count;
+                if (skip_count == skip_delay) {
+                    forwards = false;
+                    skip_count = 0
+                }
+            }}
         else {
-          offset--;
-        }
-      }
-      if(part =='')
-      {
-        document.getElementById('dynamictext').innerText = words[i].substr(0, 1);
-        //$('.word').text(words[i].substr(0, 1));
-      }
-      else
-      {
-        document.getElementById('dynamictext').innerText = part;
-        //$('.word').text(part);
-      }
+            if (offset == 0) {
+                forwards = true;
+                i++;
+                offset = 0;
+                if (i >= len) {
+                    i = 0}}}
+
+        part = words[i].substr(0, offset);
+        if (skip_count == 0) {
+            if (forwards) {
+                offset++}
+            else {
+                offset--}}
+        if(part ==''){
+        document.getElementById('dynamic_text').innerText = words[i].substr(0, 1)}
+        else{
+        document.getElementById('dynamic_text').innerText = part}
     },speed);
-  };
+}
 
  //This function will create the dynamic bootstrap modal to show 
  //the progress of the webRTC connection (caller side)
@@ -262,7 +228,7 @@ function busy_user() {
     chat_window_flag = false;
     outgoing_popup_set = false
     populate_error("reject");
-    Delete_webrtc_connection();
+    Delete_webRTC_connection();
 }
 
 //This function will handle sliding of bootstrap UI message.
@@ -273,94 +239,93 @@ function slide_down_error() {
 }
 
 //This function will handle all the UI messages based on the scenario.
-function populate_error(errorid) {
+function populate_error(error_id) {
     var msg = '';
     var text;
-    if (errorid == "reject") {
+    if (error_id == "reject") {
         text = "User has rejected your request .. it seems user is busy now !!";
     }
-    else if (errorid == "inaroom") {
+    else if (error_id == "in_a_room") {
         text = "If you want another room, please leave this room first !!";
     }
-    else if (errorid == "server") {
+    else if (error_id == "server") {
         text = "Server is down, please try again later !!";
     }
-    else if (errorid == "noresponse") {
+    else if (error_id == "no_response") {
         text = "No response from user .. User may be offline now !!";
     }
-    else if (errorid == "endforcecall") {
+    else if (error_id == "end_force_call") {
         text = "Chat room is closed by other user !!";
     }
-    else if (errorid == "endcall") {
+    else if (error_id == "end_call") {
         text = "You have closed the chat room !!";
     }
-    else if (errorid == "user_unavailble") {
+    else if (error_id == "user_unavailble") {
         text = "Other user has left from the chat !!";
     }
-    else if (errorid == "busyuser") {
+    else if (error_id == "busy_user") {
         text = "Peer user is in another room.. please try later !!";
     }
     else {
-        text = "NA";
+        text = "NA"
     }
     msg += '<button type="button" class="close" data-dismiss="alert">x</button>' +
-        '<strong>Note: </strong>' + text + '';
+        '<strong>Note: </strong>' + text + ''
 
-    document.getElementById('success-alert').innerHTML = msg;
-    slide_down_error();
+    document.getElementById('success-alert').innerHTML = msg
+    slide_down_error()
 }
 
 //This function will clear the incoming offer popup.
 function clear_incoming_modal_popup() {
-    window.clearInterval(id_wordflick);
-    $('#incoming_call_Modal').modal('hide').data('bs.modal', null);
-    document.getElementById('incoming_call_Modal').innerHTML = '';
+    window.clearInterval(id_wordFlick)
+    $('#incoming_call_Modal').modal('hide').data('bs.modal', null)
+    document.getElementById('incoming_call_Modal').innerHTML = ''
 }
 
 //This function will clear the outgoing popup.
 function clear_outgoing_modal_popup() {
-    $('#modalNotificationList').modal('hide').data('bs.modal', null);
-    document.getElementById('modalNotificationList').innerHTML = '';
+    $('#modalNotificationList').modal('hide').data('bs.modal', null)
+    document.getElementById('modalNotificationList').innerHTML = ''
 }
 
 //This function will toggle the video button
-function togglevideo(){
-    var icon = $('.video');
+function toggle_video(){
+    var icon = $('.video')
     if (icon.hasClass("btn-default")) {
-        var vidTrack = current_client_stream.getVideoTracks();
-        vidTrack.forEach(track => track.enabled = false);
-        icon.toggleClass("btn-default");
-        icon.addClass("btn-danger");
+        var vidTrack = current_client_stream.getVideoTracks()
+        vidTrack.forEach(track => track.enabled = false)
+        icon.toggleClass("btn-default")
+        icon.addClass("btn-danger")
     }
     else
     {
-        var vidTrack = current_client_stream.getVideoTracks();
-        vidTrack.forEach(track => track.enabled = true);
-        icon.toggleClass("btn-danger");
-        icon.addClass("btn-default");
+        var vidTrack = current_client_stream.getVideoTracks()
+        vidTrack.forEach(track => track.enabled = true)
+        icon.toggleClass("btn-danger")
+        icon.addClass("btn-default")
     }
 }
 
 //This function will toggle the mute button
-function togglemute(){
-    var icon = $('.mic');
+function toggleMute(){
+    var icon = $('.mic')
     if (icon.hasClass("btn-default")) {
-        var vidTrack = current_client_stream.getAudioTracks();
-        vidTrack.forEach(track => track.enabled = false);
-        icon.toggleClass("btn-default");
-        icon.addClass("btn-danger");
+        var vidTrack = current_client_stream.getAudioTracks()
+        vidTrack.forEach(track => track.enabled = false)
+        icon.toggleClass("btn-default")
+        icon.addClass("btn-danger")
     }
-    else
-    {
-        var vidTrack = current_client_stream.getAudioTracks();
-        vidTrack.forEach(track => track.enabled = true);
-        icon.toggleClass("btn-danger");
-        icon.addClass("btn-default");
+    else{
+        var vidTrack = current_client_stream.getAudioTracks()
+        vidTrack.forEach(track => track.enabled = true)
+        icon.toggleClass("btn-danger")
+        icon.addClass("btn-default")
     }
 }
 
 //This function will create dynamic video call window
-function create_videocall_page(){
+function create_videoCall_page(){
     //Activate the video call window
     var VideosDisplay = '';
     VideosDisplay +=
@@ -381,12 +346,12 @@ function create_videocall_page(){
                 '<video id="client_video_frame" playsinline controls autoplay></video>'+
                 '<div class="button_calls">'+
                         '<div class="col-xs-1">'+
-                            '<button id="hide_camera" type="button" class="btn" onclick="togglevideo()">'+
+                            '<button id="hide_camera" type="button" class="btn" onclick="toggle_video()">'+
                             '<i class="btn-default btn material-icons video" style="color:white">videocam_off</i>'+
                             '</button>'+
                         '</div>'+
                         '<div class="offset-md-2">'+
-                            '<button id="mute_camera" type="button" class="btn" onclick="togglemute()">'+
+                            '<button id="mute_camera" type="button" class="btn" onclick="toggleMute()">'+
                             '<i class="btn-default btn material-icons mic" style="color:white">mic_off</i>'+
                             '</button>'+
                         '</div>'+
@@ -442,7 +407,7 @@ function ChangeSendIcon(control) {
 function loadAllEmoji() {
     var emoji = '';
     for (var i = 128512; i <= 128566; i++) {
-        emoji += `<a href="#" style="font-size: 22px;" onclick="getEmoji(this)">&#${i};</a>`;
+        emoji += `<a href="#" style="font-size: 22px;" onclick="getEmoji(this)">&#${i};</a>`
     }
     document.getElementById('smiley').innerHTML = emoji;
 }
@@ -470,7 +435,7 @@ function getEmoji(control) {
 }
 
 //This function will update the messages when user type any of the text and press enter/click send.
-function UpdateChatMessages(txtmessage, client) {
+function UpdateChatMessages(txt_message, client) {
     var messageDisplay = '';
     if (client == true) {
         messageDisplay += "<div class='row'>" +
@@ -478,7 +443,7 @@ function UpdateChatMessages(txtmessage, client) {
             "<img src='images/pp.png' class='chat-pic rounded-circle' />" +
             "</div>" +
             "<div class='col-6 col-sm-7 col-md-7'>" +
-            "<p class='receive'>" + txtmessage + "</p>" +
+            "<p class='receive'>" + txt_message + "</p>" +
             "</div>" +
             "</div>";
         document.getElementById('text-chat').innerHTML += messageDisplay;
@@ -486,7 +451,7 @@ function UpdateChatMessages(txtmessage, client) {
     else {
         messageDisplay += "<div class='row justify-content-end'>" +
             "<div class='col-6 col-sm-7 col-md-7'>" +
-            "<p class='sent float-right'>" + txtmessage + "</p>" +
+            "<p class='sent float-right'>" + txt_message + "</p>" +
             "</div>" +
             "<div class='col-2 col-sm-1 col-md-1'>" +
             "<img src='images/pp.png' class='chat-pic rounded-circle'/>" +
@@ -500,18 +465,19 @@ function UpdateChatMessages(txtmessage, client) {
 //This function will populate the online userlist from the server.
 function LoadOnlineUserList(username_array) {
     //convert the json to Map 
-    const map2 = new Map(username_array);
+    const map = new Map(username_array);
     //Count of online user -> server send all user list , we have to remove our name from that list 
-    document.getElementById('onlineusers').innerHTML = '<span class="indicator label-success"></span>' +
-                                                        'online users (' + (map2.size - 1) + ')';
-    document.getElementById('lstChat').innerHTML = "";
-    if (map2.size > 1) {
+    document.getElementById('online_users').innerHTML = '<span class="indicator label-success"></span>' +
+                                                        'online users (' + (map.size - 1) + ')'
+    document.getElementById('list_Chat').innerHTML = ""
+    if (map.size > 1) {
         var id = 0
-        for (let [key, value] of map2) {
+        for (let [key, value] of map) {
             if (username != key) { 
-                var id_name = 'online_status_'+id; /* Used for dynamic id */
+                var id_name = 'online_status_'+id /* Used for dynamic id */
                 //populate the sidebar online users list dynamically
-                document.getElementById('lstChat').innerHTML += "<li class='list-group-item list-group-item-action'>" +
+                document.getElementById('list_Chat').innerHTML += 
+                "<li class='list-group-item list-group-item-action'>" +
                     "<div class='row'>" +
                     "<div class='col-md-2'>" +
                     "<img src='images/pp.png' class='friend-pic rounded-circle' />" +
@@ -531,20 +497,16 @@ function LoadOnlineUserList(username_array) {
             }
         }
     }
-    else
-    {
-            //Only one user name present ie. only client 
-            if (map2.key == username) {
-                document.getElementById('lstChat').innerHTML = "";
-                console.log("single user = ", map2.key);
+    else{   //Only one user name present ie. only client 
+            if (map.key == username) {
+                document.getElementById('list_Chat').innerHTML = "";
+                console.log("single user = ", map.key);
             }
     }
 }
-function Update_user_status(id_name, value)
-{
+function Update_user_status(id_name, value){
     switch(value)
-    {
-        // handle the user status 
+    {   // handle the user status 
         case "online":
             document.getElementById(id_name).classList.replace('label-danger', 'label-success');
             break
