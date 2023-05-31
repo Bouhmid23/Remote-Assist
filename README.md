@@ -15,6 +15,6 @@ Les etapes :
 
 3. run server.js => node server.js
 
-4. ouvrir index.html dans un navigateur (Prefered Chrome or Firefox)`
+4. ouvrir index.html dans un navigateur (Preferé Chrome ou Firefox)`
 
 
