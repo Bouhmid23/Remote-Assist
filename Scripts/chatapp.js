@@ -184,8 +184,9 @@ function wordFlick (words) {
             document.getElementById('dynamic_text').innerText = words[i].substr(0, 1)}
             else{
                 try{
-            document.getElementById('dynamic_text').innerText = part}
-            catch(e){
+                    if (document.getElementById('dynamic_text').innerText!==null){
+                        document.getElementById('dynamic_text').innerText = part}
+                    }catch(e){
                 console.log("error in wordFlick = ", e)
             }}
         },speed)

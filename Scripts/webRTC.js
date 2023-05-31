@@ -109,14 +109,15 @@ async function permission_camera_before_call(channel,name) {
 }}
 //This function will handle when when we got ice candidate from another user.
  async function onCandidate(candidate) {
-    try {
-        await (peerConnection.addIceCandidate(candidate).then(()=>{
-            onAddIceCandidateSuccess(peerConnection)
-        }))
-    } catch (e) {
-        onAddIceCandidateError(peerConnection, e)
-    }    
-}
+    if(peerConnection != null || peerConnection != undefined){
+        try {
+            await (peerConnection.addIceCandidate(candidate).then(()=>{
+                onAddIceCandidateSuccess(peerConnection)
+            }))
+        } catch (e) {
+            onAddIceCandidateError(peerConnection, e)
+        }    
+}}
 
 //This function will print the ICE candidate success 
 function onAddIceCandidateSuccess(_pc) {
@@ -230,7 +231,7 @@ async function onCreateOfferSuccess(desc) {
                 })
         })
     } catch (e) {
-        onSetSessionDescriptionError(e)
+        console.log("set local description error",e)
     }
 }
 
@@ -244,23 +245,23 @@ function make_answer() {
 //This function will create the webRTC answer for offer.
 async function creating_answer() {
     try {
-        await peerConnection.setRemoteDescription(conn_offer).then(()=>{
+        await peerConnection.setRemoteDescription(conn_offer).then(async ()=>{
             onSetRemoteDescriptionSuccess(peerConnection)
             peerConnection.addEventListener('icecandidate', e => icecandidateAdded(e))
-        })
-
+            console.log("creating answer..")
+            try {
+                let answer = await peerConnection.createAnswer()
+                console.log(" answer created = "+ typeof answer)
+                await onCreateAnswerSuccess(answer)
+            } catch (e) {
+                onCreateSessionDescriptionError(e)
+            }
+            })
     } catch (e) {
-        onSetSessionDescriptionError(e)
-      clear_incoming_modal_popup() // remove modal when any error occurs
+        console.log("set remote description error",e)
+        clear_incoming_modal_popup() // remove modal when any error occurs
     }
-    console.log("creating answer..")
-    try {
-        const answer = await peerConnection.createAnswer()
-        console.log(" answer created = "+ answer)
-        await onCreateAnswerSuccess(answer)
-    } catch (e) {
-        onCreateSessionDescriptionError(e)
-    }
+    
 }
 
 //This function will handle local description of peer user
@@ -269,18 +270,18 @@ async function onCreateAnswerSuccess(desc) {
     try {
         await peerConnection.setLocalDescription(desc).then(()=>{
             onSetLocalDescriptionSuccess(peerConnection)
-        })
-    } catch (e) {
+            conn_answer = desc
+            //store the answer
+            console.log("sending answer to server..", desc)
+            send({
+                    "type": "answer",
+                    "answer": conn_answer
+                })
+            })
+    }catch (e) {
         onSetSessionDescriptionError(e)
         clear_incoming_modal_popup() /*remove modal when any error occurs */
-    }
-    //store the answer
-    conn_answer = desc
-    console.log("sending answer to server..")
-    send({
-            "type": "answer",
-            "answer": conn_answer
-        })   
+    }     
 }
 
 //This function will print log of local description error
@@ -458,7 +459,7 @@ function call_user(name) {
 
 //This function will handle when somebody wants to call us 
 function onOffer(offer, name) {
-    console.log("somebody wants to call us  => offer = "+ offer)
+    console.log("somebody wants to call us, offer = "+ typeof offer)
     connectedUser = name
     conn_offer = offer
     //create a popup to accept/reject room request
