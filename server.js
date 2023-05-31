@@ -100,7 +100,7 @@ function handle_want_to_call(data,connection){
 	var conn = users[data.name];
 					if (conn != null) {
 						if((conn.otherName != null) && map.get(data.name) == "busy"){
-							//User has in the room, User is can't accept the offer 
+							//User in room, User can't accept the offer 
 							sendTo(connection, { "type": "server_already_in_room", "success": true, "name": data.name });
 						}
 						else{

@@ -1,4 +1,4 @@
-var EndPoint="ws://localhost:3000"
+var EndPoint="wss://signaling-server-keuc.onrender.com"
 var connection = new WebSocket(EndPoint)
 
 //This function will check the websocket connection error.
