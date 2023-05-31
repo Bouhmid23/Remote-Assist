@@ -127,7 +127,7 @@ function create_request_room_Modal(name) {
         '</button>' +
         '</div>' +
         '<div class="col-xs-2">' +
-        '<button style="margin-right:16px" data-dismiss="modal" class="btn btn-danger btn-lg" id="incoming-end-call" type="button" onclick=`reject_answer()`>' +
+        '<button style="margin-right:16px" data-dismiss="modal" class="btn btn-danger btn-lg" id="incoming-end-call" type="button" onclick="reject_answer()">' +
         '<span class="glyphicon glyphicon-phone-alt"></span>Reject' +
         '</button>' +
         '</div>' +
@@ -150,42 +150,48 @@ function create_request_room_Modal(name) {
 }
 
 function wordFlick (words) {
-    var part ='',
-    i = 0,
-    offset = 0,
-    len = words.length,
-    forwards = true,
-    skip_count = 0,
-    skip_delay = 15,
-    speed = 70;
-    return window.setInterval(function () {
-        if (forwards) {
-            if (offset >= words[i].length) {
-                ++skip_count;
-                if (skip_count == skip_delay) {
-                    forwards = false;
-                    skip_count = 0
-                }
-            }}
-        else {
-            if (offset == 0) {
-                forwards = true;
-                i++;
-                offset = 0;
-                if (i >= len) {
-                    i = 0}}}
-
-        part = words[i].substr(0, offset);
-        if (skip_count == 0) {
+    try{
+        var part ='',
+        i = 0,
+        offset = 0,
+        len = words.length,
+        forwards = true,
+        skip_count = 0,
+        skip_delay = 15,
+        speed = 70;
+        return window.setInterval(function () {
             if (forwards) {
-                offset++}
-            else {
-                offset--}}
-        if(part ==''){
-        document.getElementById('dynamic_text').innerText = words[i].substr(0, 1)}
-        else{
-        document.getElementById('dynamic_text').innerText = part}
-    },speed);
+                if (offset >= words[i].length) {
+                    ++skip_count;
+                    if (skip_count == skip_delay) {
+                        forwards = false;
+                        skip_count = 0}
+                }}else {
+                    if (offset == 0) {
+                        forwards = true;
+                        i++;
+                        offset = 0;
+                        if (i >= len) {
+                            i = 0}}}
+
+            part = words[i].substr(0, offset);
+            if (skip_count == 0) {
+                if (forwards) {
+                    offset++}
+                else {
+                    offset--}}
+            if(part ==''){
+            document.getElementById('dynamic_text').innerText = words[i].substr(0, 1)}
+            else{
+                try{
+            document.getElementById('dynamic_text').innerText = part}
+            catch(e){
+                console.log("error in wordFlick = ", e)
+            }}
+        },speed)
+}catch(e){
+    console.log("error in wordFlick = ", e)
+}
 }
 
  //This function will create the dynamic bootstrap modal to show 

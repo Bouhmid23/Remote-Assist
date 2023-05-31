@@ -53,7 +53,7 @@ function handle_offer(data,connection){
 			sendTo(conn, { "type": "server_offer", "offer": data.offer, "name": connection.name });
 		}
 		else {
-			//User has in the room, User is can't accept the offer 
+			//User in room, User can't accept the offer 
 			sendTo(connection, { "type": "server_already_in_room", "success": true, "name": data.name });
 		}
 	}
@@ -195,54 +195,65 @@ wss.on('connection', function (connection) {
 		if(isJsonString == true)
 		{// Parse the messages from client 
 			var data = JSON.parse(message)
+			console.log(data)
 			switch (data.type) {
 					//login request from client 
 				case "login":
 					handle_login(data,connection)
+					console.log("login successfully handled")
 					break
 	
 					// Offer request from client
 				case "offer":					
 					handle_offer(data,connection)
+					console.log("offer successfully handled")
 					break
 	
 					//Answer request from client
 				case "answer":
 					handle_answer(data)
+					console.log("answer successfully handled")
 					break
 	
 					//candidate request 
 				case "candidate":
 					handle_candidate(data)
+					console.log("candidate successfully handled")
 					break
 	
 					//when user want to leave from room 
 				case "leave":
-					handle_leave(data,connection);
+					handle_leave(data,connection)
+					console.log("leaving successfully handled")
 					break
 	
 					//When user reject the offer 
 				case "busy":
 					handle_busy(data)
+					console.log("busy successfully handled")
 					break
 	
 				case "want_to_call":
 					handle_want_to_call(data,connection)
+					console.log("want to call successfully handled")
 					break	
 	
 					//Once offer and answer is exchange, ready for a room 
 				case "ready":
 					handle_ready(data,connection)
+					console.log("ready for call successfully handled")
 					break
 	
-					//user quit/signout 
+					//user quit/sign_out 
 				case "quit":
 					handle_quit(data,connection)
+					console.log("quitting successfully handled")
 					break
 	
 					//default 
 				default:
 					sendTo(connection, { type: "server_error", message: "Unrecognized command: " + data.type })
+					console.log("error handling the message")
 					break
 			}
 		}
@@ -257,5 +268,6 @@ wss.on('connection', function (connection) {
 	//When socket connection is closed 
 	connection.on('close', function () {
 		handle_close(connection)
+		console.log("closing handled successfully")
 	})})
 

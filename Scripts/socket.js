@@ -1,19 +1,19 @@
-const EndPoint="ws://localhost:8000"
-const connection = new WebSocket(EndPoint)
+var EndPoint="ws://localhost:3000"
+var connection = new WebSocket(EndPoint)
 
 //This function will check the websocket connection error.
 connection.onerror= function (error) {
-    console.log("connection.onerror",error);
-    document.getElementById('login_error').innerText = "Server is down.. please try later";
+    console.log("connection.onerror",error)
+    document.getElementById('login_error').innerText = "Server is down.. please try later"
     populate_error("server")
-};
+}
 
  //This function will check the websocket connection open.
  //When connection successful , the user name send to server.
 connection.onopen= function () {
     console.log("connection is fine")
     setInterval(ping, 10000)
-};
+}
 
  //This function will handle all the messages from server.
  // Main function to receive data from server.
@@ -30,42 +30,52 @@ connection.onmessage= function (message) {
 
         case "server_login":
             onLogin(data.success)
+            console.log("onLogin")
             break
 
         case "server_offer":
             onOffer(data.offer, data.name)
+            console.log("onOffer")
             break
 
         case "server_answer":
             onAnswer(data.answer)
+            console.log("onAnswer")
             break
 
         case "server_candidate":
             onCandidate(data.candidate)
+            console.log("onCandidate")
             break
 
         case "server_user_list":
             LoadOnlineUserList(data.name)
+            console.log("LoadOnlineUserList")
             break
 
         case "server_user_ready":
             user_is_ready(data.success, data.peer_name)
+            console.log("user_is_ready")
             break
 
         case "server_user_want_to_leave":
             DisposeRoom()
+            console.log("DisposeRoom")
             break
 
         case "server_busy_user":
             busy_user()
+            console.log("busy_user")
             break
 
         case "server_exit_from":
             left_from_server()
+            console.log("left_from_server")
             break
         
         case "server_already_in_room":
             check_user_status(data.success,data.name)
+            console.log("server_already_in_room")
             break  
 
         case "server_error":
@@ -86,17 +96,12 @@ function send(message) {
     connection.send(JSON.stringify(message))
 }
 connection.onclose = function() {
-    console.log("connection closed");
+    console.log("connection closed")
     // Wait for 5 seconds before trying to reconnect
     setTimeout(function() {
-      connection = new WebSocket(EndPoint);
+      connection = new WebSocket(EndPoint)
       connection.onopen = function() {
-        console.log("connection reopened");
-      };
-      connection.onclose = function() {
-        console.log("connection closed again");
-        // Recursively call this function to try to reconnect again
-        reconnect();
-      };
-    }, 5000);
-  };
+        console.log("connection reopened")
+      }
+    }, 5000)
+  }

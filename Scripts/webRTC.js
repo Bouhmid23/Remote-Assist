@@ -1,5 +1,5 @@
 // WebRTC 
-let peerConnection
+var peerConnection
 var Send_dataChannel, connectedUser, Receive_dataChannel
 var chat_window_flag = false
 var incoming_popup_set = false, outgoing_popup_set = false
@@ -8,7 +8,7 @@ var conn_answer
 var flag_send_datachannel
 var stream
 var m_client_Video
-const offerOptions = {
+var offerOptions = {
     offerToReceiveAudio: 1,
     offerToReceiveVideo: 1
 }
@@ -83,9 +83,8 @@ async function permission_camera_before_call(channel,name) {
             current_client_stream = stream
         })
         console.log('Received local stream')
-    } catch (e) {
-        alert(`getUserMedia() error: ${e.name}`)
-    }
+    
+    
     const videoTracks = current_client_stream.getVideoTracks()
     const audioTracks = current_client_stream.getAudioTracks()
     if (videoTracks.length > 0) {
@@ -113,7 +112,9 @@ async function permission_camera_before_call(channel,name) {
         Create_DataChannel(name)  
         creating_offer()
     }
-}
+} catch (e) {
+    alert(`getUserMedia() error: ${e.name}`)
+}}
 //This function will handle when when we got ice candidate from another user.
  async function onCandidate(candidate) {
     try {
@@ -312,6 +313,7 @@ function onSetSessionDescriptionError(error) {
 
 //This function will handle when another user answers to our offer .
 async function onAnswer(answer) { 
+    try{
     document.getElementById('dynamic_progress_text').setAttribute('data-loading-text', "Waiting for a answer from user..Please wait ..")
     try {
         await peerConnection.setRemoteDescription(answer).then(()=>{
@@ -323,6 +325,9 @@ async function onAnswer(answer) {
     } catch (e) {
         onSetSessionDescriptionError(e)
     }
+}catch(e){
+    console.log("error in onAnswer function = "+e)
+}
 }
 
 //This function will handle the login message from server If it is success, it will initiate the webRTC RTCPeerConnection.
@@ -411,7 +416,7 @@ function Delete_webRTC_connection(){
     connectedUser = null
     m_PeerVideo.src = ""
     peerConnection.onicecandidate = null
-    peerConnection.onaddstream = null
+    peerConnection.addTrack = null
     //stop the camera and return to normal status 
     m_client_Video.src = ""
     current_client_stream.getAudioTracks()[0].stop()
