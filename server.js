@@ -1,5 +1,7 @@
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({ port: 3000 });
+
+var usersAnDroid=[]
 /* to store the connection details */
 var users = {};
 /* to store the user list details */
@@ -33,24 +35,33 @@ function handle_login(data,connection){
 
 function handle_answer(data){
 	/* Get the peer user connection details */
-	var conn = users[data.name];
-	if (conn != null) {
+	var userToReceiveAnswer 
+	if(data.target!=null || data.target!=undefined){
+		userToReceiveAnswer=users[data.target]
+	}
+	else{userToReceiveAnswer = users[data.name]}
+	if (userToReceiveAnswer != null) {
 		/* Send the answer back to requested user */
-		sendTo(conn, { "type": "server_answer", "answer": data.answer })}
+		sendTo(userToReceiveAnswer, { "type": "server_answer", "data": data.data.sdp })}
 }
 function handle_offer(data,connection){
 	//Check the peer user has logged in the server 
 	if (users[data.name]) {
 		//Get the peer connection from array 
-		var conn = users[data.name];
-		if (conn == null) {
+		var userToReceiveOffer 
+		if(data.target!=null || data.target!=undefined){
+			userToReceiveOffer=users[data.target]
+		}
+		else
+			{userToReceiveOffer = users[data.name]}
+		if (userToReceiveOffer == null) {
 			//Error handling 
 			sendTo(connection, { "type": "server_no_user", "success": false });
 		}
-		else if (conn.otherName == null) {
-			//When user is free and avaialble for the offer 
+		else if (userToReceiveOffer.otherName == null) {
+			//When user is free and available for the offer 
 			//Send the offer to peer user 
-			sendTo(conn, { "type": "server_offer", "offer": data.offer, "name": connection.name });
+			sendTo(userToReceiveOffer, { "type": "server_offer", "data": data.data.sdp, "name": connection.name });
 		}
 		else {
 			//User in room, User can't accept the offer 
@@ -65,10 +76,18 @@ function handle_offer(data,connection){
 }
 function handle_candidate(data){
 	//Get connection details /
-	var conn = users[data.name];
-	if (conn != null) {
+	var userToReceiveCandidate
+	if(data.target!=null || data.target!=undefined)
+		{userToReceiveCandidate=users[data.target]}
+	else
+	{userToReceiveCandidate = users[data.name]}
+	if (userToReceiveCandidate != null) {
 		//Send candidate details to user 
-		sendTo(conn, { "type": "server_candidate", "candidate": data.candidate });
+		sendTo(userToReceiveCandidate, { "type": "server_candidate", "data":{
+			sdpMLineIndex:data.data.sdpMLineIndex,
+            sdpMid:data.data.sdpMid,
+            candidate: data.data.candidate
+		} });
 	}
 }
 function handle_leave(data,connection){
@@ -97,9 +116,9 @@ function handle_busy(data){
 	}
 }
 function handle_want_to_call(data,connection){
-	var conn = users[data.name];
-					if (conn != null) {
-						if((conn.otherName != null) && map.get(data.name) == "busy"){
+	var peerToCall = users[data.name];
+					if (peerToCall != null) {
+						if((peerToCall.otherName != null) && map.get(data.name) == "busy"){
 							//User in room, User can't accept the offer 
 							sendTo(connection, { "type": "server_already_in_room", "success": true, "name": data.name });
 						}
@@ -191,32 +210,41 @@ wss.on('connection', function (connection) {
 	//Successful connection
 	console.log("User has connected")
 	connection.on('message', function (message) {
+		
 		var isJsonString = checkIsJson(message);
 		if(isJsonString == true)
-		{// Parse the messages from client 
+		{
+			// Parse the messages from client 
 			var data = JSON.parse(message)
+			
 			console.log(data)
-			switch (data.type) {
+			switch (data.type.toLowerCase()) {
 					//login request from client 
-				case "login":
-					handle_login(data,connection)
-					console.log("login successfully handled")
-					break
+				case "login" :
+					
+						handle_login(data,connection)
+						console.log("login successfully handled")
+						break
 	
 					// Offer request from client
-				case "offer":					
-					handle_offer(data,connection)
-					console.log("offer successfully handled")
-					break
+				case "offer" :	
+									
+						handle_offer(data,connection)
+						console.log("offer successfully handled")
+						break
+					
 	
 					//Answer request from client
-				case "answer":
+				case "answer" :
+					
 					handle_answer(data)
 					console.log("answer successfully handled")
 					break
+					
 	
 					//candidate request 
 				case "candidate":
+					
 					handle_candidate(data)
 					console.log("candidate successfully handled")
 					break
@@ -233,10 +261,11 @@ wss.on('connection', function (connection) {
 					console.log("busy successfully handled")
 					break
 	
-				case "want_to_call":
-					handle_want_to_call(data,connection)
-					console.log("want to call successfully handled")
-					break	
+				case "want_to_call" :
+					
+						handle_want_to_call(data,connection)
+						console.log("want to call successfully handled")
+						break	
 	
 					//Once offer and answer is exchange, ready for a room 
 				case "ready":
@@ -270,4 +299,6 @@ wss.on('connection', function (connection) {
 		handle_close(connection)
 		console.log("closing handled successfully")
 	})})
+
+
 

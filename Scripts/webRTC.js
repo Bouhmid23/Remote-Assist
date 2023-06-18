@@ -1,3 +1,4 @@
+
 // WebRTC 
 var peerConnection
 var Send_dataChannel, connectedUser, Receive_dataChannel
@@ -9,13 +10,19 @@ var flag_send_datachannel
 var stream
 var m_client_Video
 var offerOptions = {
-    offerToReceiveAudio: 1,
-    offerToReceiveVideo: 1
+    offerToReceiveAudio: true,
+    offerToReceiveVideo: true
 }
 var count_message = 0
 var configuration = {
-    "iceServers": [
-        { "urls": "stun:stun.1.google.com:19302"}]
+    iceServers : [
+        { urls: "stun:stun.1.google.com:19302"},
+        {
+            urls: 'turn:numb.viagenie.ca',
+            credential: 'muazkh',
+            username: 'webrtc@live.com'
+        },
+    ],
 }
 
 //This function will handle the data channel open callback.
@@ -109,9 +116,12 @@ async function permission_camera_before_call(channel,name) {
 }}
 //This function will handle when when we got ice candidate from another user.
  async function onCandidate(candidate) {
-    if(peerConnection != null || peerConnection != undefined){
+    if(candidate != null || candidate != undefined){
+        console.log(candidate + typeof candidate)
         try {
-            await (peerConnection.addIceCandidate(candidate).then(()=>{
+            await (peerConnection.addIceCandidate({"candidate":candidate.candidate,
+                                                    "sdpMid":candidate.sdpMid,
+                                                    "sdpMLineIndex":candidate.sdpMLineIndex}).then(()=>{
                 onAddIceCandidateSuccess(peerConnection)
             }))
         } catch (e) {
@@ -156,9 +166,9 @@ function icecandidateAdded(ev) {
     if (ev.candidate) {
         send({
             "type": "candidate",
-            "candidate": ev.candidate
+            "data": ev.candidate
         })
-        console.log("ICE candidate has send to Server ..")
+        console.log("ICE candidate has send to Server ..",ev.candidate)
     }
 }
 
@@ -210,9 +220,11 @@ function Create_DataChannel(name) {
 async function creating_offer() {
     document.getElementById('dynamic_progress_text').setAttribute('data-loading-text', "Requesting with user.. Please wait..")
     try {
-        console.log('peer1 createOffer start')
-        const offer = await peerConnection.createOffer(offerOptions)
-        await onCreateOfferSuccess(offer)
+            await peerConnection.createOffer(offerOptions).then(async(offer)=>{
+            
+            console.log("offer created : "+ offer.sdp+", is unified-plan")
+            await onCreateOfferSuccess(offer)
+        })
     } catch (e) {
         onCreateSessionDescriptionError(e)
     }
@@ -220,14 +232,14 @@ async function creating_offer() {
 
 //This function will set client local description of the webRTC 
 async function onCreateOfferSuccess(desc) {
-    console.log(`Offer from client\n${desc.sdp}`)
+    console.log(`create offer success`)
     try {
         await peerConnection.setLocalDescription(desc).then(()=>{
             onSetLocalDescriptionSuccess(peerConnection)
-            console.log("sending offer to server..")
+            console.log("sending offer to server..:",desc)
                 send({
                     "type": "offer",
-                    "offer": desc
+                    "data": desc
                 })
         })
     } catch (e) {
@@ -245,20 +257,22 @@ function make_answer() {
 //This function will create the webRTC answer for offer.
 async function creating_answer() {
     try {
-        await peerConnection.setRemoteDescription(conn_offer).then(async ()=>{
+        console.log("the offer received to create answer is :",conn_offer)
+        //let offer = new RTCSessionDescription(conn_offer)
+        //console.log("the offer received to create answer is :",offer["sdp"])
+        await peerConnection.setRemoteDescription({"type":"offer","sdp":conn_offer}).then(async ()=>{
             onSetRemoteDescriptionSuccess(peerConnection)
             peerConnection.addEventListener('icecandidate', e => icecandidateAdded(e))
             console.log("creating answer..")
-            try {
-                let answer = await peerConnection.createAnswer()
-                console.log(" answer created = "+ typeof answer)
-                await onCreateAnswerSuccess(answer)
-            } catch (e) {
-                onCreateSessionDescriptionError(e)
-            }
+            
+            await peerConnection.createAnswer(offerOptions).then(async (answer)=>{
+            console.log(" answer created : "+ answer.sdp)
+            await onCreateAnswerSuccess(answer)
             })
-    } catch (e) {
-        console.log("set remote description error",e)
+            
+            })
+    } catch ( DOMException ) {
+        console.log(`set remote description error ${DOMException.name} :`,DOMException.message)
         clear_incoming_modal_popup() // remove modal when any error occurs
     }
     
@@ -272,10 +286,10 @@ async function onCreateAnswerSuccess(desc) {
             onSetLocalDescriptionSuccess(peerConnection)
             conn_answer = desc
             //store the answer
-            console.log("sending answer to server..", desc)
+            console.log("sending answer to server..", desc.sdp)
             send({
                     "type": "answer",
-                    "answer": conn_answer
+                    "data": conn_answer
                 })
             })
     }catch (e) {
@@ -307,20 +321,21 @@ function onSetSessionDescriptionError(error) {
 //This function will handle when another user answers to our offer .
 async function onAnswer(answer) { 
     try{
-    document.getElementById('dynamic_progress_text').setAttribute('data-loading-text', "Waiting for a answer from user..Please wait ..")
-    try {
-        await peerConnection.setRemoteDescription(answer).then(()=>{
-            onSetRemoteDescriptionSuccess(peerConnection)
-            send({
-                "type": "ready"
+        console.log("answer received from server", answer)
+        document.getElementById('dynamic_progress_text').setAttribute('data-loading-text', "Waiting for a answer from user..Please wait ..")
+        try {
+            await peerConnection.setRemoteDescription({"type":"answer","sdp":answer}).then(()=>{
+                onSetRemoteDescriptionSuccess(peerConnection)
+                send({
+                    "type": "ready"
+                })
             })
-        })
-    } catch (e) {
-        onSetSessionDescriptionError(e)
+        } catch (e) {
+            onSetSessionDescriptionError(e)
+        }
+    }catch(e){
+        console.log("error in onAnswer function = "+e)
     }
-}catch(e){
-    console.log("error in onAnswer function = "+e)
-}
 }
 
 //This function will handle the login message from server If it is success, it will initiate the webRTC RTCPeerConnection.
@@ -459,7 +474,7 @@ function call_user(name) {
 
 //This function will handle when somebody wants to call us 
 function onOffer(offer, name) {
-    console.log("somebody wants to call us, offer = "+ typeof offer)
+    console.log(`${name} wants to call us, offer = `+ offer.sdp)
     connectedUser = name
     conn_offer = offer
     //create a popup to accept/reject room request
@@ -486,7 +501,8 @@ function user_is_ready(val, peer_name) {
         outgoing_popup_set = false
 
         var connectionState = RTCPeerConnection.connectionState
-        console.log("RTCPeerConnection.connectionState = "+connectionState)
+        if(connectionState !=null && connectionState!=undefined){
+            console.log("RTCPeerConnection.connectionState = "+connectionState)}
     }
 }
 //This function will send the messages with webRTC data channel.

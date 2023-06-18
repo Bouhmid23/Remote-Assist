@@ -1,4 +1,4 @@
-var EndPoint="wss://signaling-server-keuc.onrender.com"
+var EndPoint="ws://localhost:3000"
 var connection = new WebSocket(EndPoint)
 
 //This function will check the websocket connection error.
@@ -18,10 +18,10 @@ connection.onopen= function () {
  //This function will handle all the messages from server.
  // Main function to receive data from server.
 connection.onmessage= function (message) {
-    console.log("message from server = ", message.data)
+    console.log("message from server = ", message)
     var reason=message.data.toString()
     var data = JSON.parse(reason)
-    console.log(data.type)
+    console.log( "received message is of type",typeof data)
     switch (data.type) {
         case "server_pong":
             if (data.name == "pong") {
@@ -34,18 +34,18 @@ connection.onmessage= function (message) {
             break
 
         case "server_offer":
-            onOffer(data.offer, data.name)
-            console.log("onOffer")
+            onOffer(data.data, data.name)
+            console.log("onOffer and the type is :",typeof data.data)
             break
 
         case "server_answer":
-            onAnswer(data.answer)
-            console.log("onAnswer")
+            onAnswer(data.data)
+            console.log("onAnswer and the type is :",typeof data.data)
             break
 
         case "server_candidate":
-            onCandidate(data.candidate)
-            console.log("onCandidate")
+            onCandidate(data.data)
+            console.log("onCandidate and the type is : ",typeof data.data)
             break
 
         case "server_user_list":
@@ -93,6 +93,7 @@ connection.onmessage= function (message) {
 function send(message) {
     if (connectedUser) {
         message.name = connectedUser}
+        //message.origin="web"
     connection.send(JSON.stringify(message))
 }
 connection.onclose = function() {

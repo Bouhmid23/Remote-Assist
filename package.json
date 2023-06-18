@@ -6,9 +6,8 @@
     "jquery": "^3.6.3",
     "nodemon": "^2.0.22",
     "popper": "^1.0.1",
-    "socket.io": "^4.6.1",
-    "webrtc-adapter": "^8.2.1",
+    "websocket": "^1.0.34",
     "ws": "^8.12.1",
-    "wss": "^3.3.4"
+    "wss": "^0.0.2"
   }
 }

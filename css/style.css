@@ -623,3 +623,6 @@ width: 120px;
     color: #502929;
     font-size: 14px;
     }
+    .overlay{
+        resize: both;
+    }
