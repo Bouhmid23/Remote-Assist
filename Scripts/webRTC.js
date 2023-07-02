@@ -18,9 +18,14 @@ var configuration = {
     iceServers : [
         { urls: "stun:stun.1.google.com:19302"},
         {
-            urls: 'turn:numb.viagenie.ca',
-            credential: 'muazkh',
-            username: 'webrtc@live.com'
+            urls: 'turn:openrelay.metered.ca:443',
+            credential: 'openrelayproject',
+            username: 'openrelayproject'
+        },
+        {
+            urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+            credential: 'openrelayproject',
+            username: 'openrelayproject'
         },
     ],
 }
@@ -96,7 +101,7 @@ async function permission_camera_before_call(channel,name) {
     console.log('Created local peer connection object peerConnection')
     peerConnection.addEventListener('iceconnectionstatechange', e => onIceStateChange(peerConnection, e))
     current_client_stream.getTracks().forEach(track => peerConnection.addTrack(track, current_client_stream))
-    peerConnection.addEventListener('track', gotRemoteStream)
+    peerConnection.addEventListener('track'||'stream', gotRemoteStream)
     console.log('Added local stream to peerConnection')
 
     if(channel == false){
@@ -116,7 +121,7 @@ async function permission_camera_before_call(channel,name) {
 }}
 //This function will handle when when we got ice candidate from another user.
  async function onCandidate(candidate) {
-    if(candidate != null || candidate != undefined){
+    if((candidate != null || candidate != undefined) && peerConnection!=undefined ){
         console.log(candidate + typeof candidate)
         try {
             await (peerConnection.addIceCandidate({"candidate":candidate.candidate,
@@ -257,7 +262,7 @@ function make_answer() {
 //This function will create the webRTC answer for offer.
 async function creating_answer() {
     try {
-        console.log("the offer received to create answer is :",conn_offer)
+        //console.log("the offer received to create answer is :",conn_offer)
         //let offer = new RTCSessionDescription(conn_offer)
         //console.log("the offer received to create answer is :",offer["sdp"])
         await peerConnection.setRemoteDescription({"type":"offer","sdp":conn_offer}).then(async ()=>{
@@ -273,6 +278,7 @@ async function creating_answer() {
             })
     } catch ( DOMException ) {
         console.log(`set remote description error ${DOMException.name} :`,DOMException.message)
+    
         clear_incoming_modal_popup() // remove modal when any error occurs
     }
     
@@ -408,6 +414,7 @@ function DisposeRoom() {
 
 //This function will delete the webRTC connections.
 function Delete_webRTC_connection(){
+    if(peerConnection!=null){
     Update_user_status("client_user_status","online")
     //close all the data channel
     if(flag_send_datachannel == true){
@@ -435,6 +442,7 @@ function Delete_webRTC_connection(){
     peerConnection = null
     // clear the chat window 
     document.getElementById('text-chat').innerHTML =''
+}
 }
 
 //This function will send messages to server when user reject the offer from other user.
@@ -474,7 +482,7 @@ function call_user(name) {
 
 //This function will handle when somebody wants to call us 
 function onOffer(offer, name) {
-    console.log(`${name} wants to call us, offer = `+ offer.sdp)
+    console.log(`${name} wants to call us, offer = `+ offer)
     connectedUser = name
     conn_offer = offer
     //create a popup to accept/reject room request

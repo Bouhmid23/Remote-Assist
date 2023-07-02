@@ -443,7 +443,7 @@ width: 120px;
       .row::after {
         content: "";
         clear: both;
-        display: table;
+        
       }
 
     /*video call start*/
@@ -464,20 +464,23 @@ width: 120px;
         /*right: 75px;
         border: 1px solid #0f0e0e;
     } */
+    
     #peer_video_frame {
       width: 100%;
-      /*height: 540px;*/
+      height: auto;
+      border-radius: 2%;
     }
     #client_video_frame {
         width: 100%;
-        /*height: 540px;*/
+        border-radius: 2%;
+        height: auto;
     }
-    figure {
+    figure{
        width:100%;
        height:100%;
-       /*margin:1.25rem auto;*/
-       padding:1.051%;
-       background-color:#000;
+       padding:1%;
+       background-color:transparent;
+       border-radius: 2%;
     }
     .button_calls
     {
@@ -602,23 +605,32 @@ width: 120px;
       margin: 10px 0 0 12px;
     }
     .modal-dialog-video{
-        max-width: 500px;
+        max-width: 800px;
     }
     .modal-body-video{
         position: relative;
         flex: 1 1 auto;
         padding: 1rem;
         height: 350px;
-        width: 450px;
+        width: 500px;
     }
-    #text-chat {
-        height: 600px;
-        width: 580px;
+    .card-footer{
+        height: 70px;
+        width: 750px;
         margin-top: 32px;
-        border: 1px solid rgba(0,0,0,.2);
+        border: 3px solid rgba(0,0,0,.2);
         padding: 12px 22px 12px 22px;
+        border-radius: 5%;
     }
-
+    #text-chat  {
+        height: auto;
+        width: auto;
+        margin-top: 32px;
+        border: 3px solid rgba(0,0,0,.2);
+        padding: 12px 22px 12px 22px;
+        border-radius: 2%;
+    }
+    
     .overlay h2 {
     color: #502929;
     font-size: 14px;
@@ -626,3 +638,120 @@ width: 120px;
     .overlay{
         resize: both;
     }
+    .video-container  {
+        display: flex;
+        margin-top: 10px;
+        align-items: center;
+        /*width: 100%;*/
+        /*height: auto;*/
+        width: 550px;
+      }
+      .toolbar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        background-color: #ededed;
+        border-radius: 5px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.53);
+      }
+      
+      .toolbar > div {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 10px;
+        border-radius: 0%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: move;
+        font-size: 20px;
+        color: #ffffff;
+        background-color: transparent;
+        
+        
+      }
+      
+      .toolbar  .arrow {
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        background-color: transparent;
+        border: 7px  solid #ff4000;
+        
+      }
+      
+      .toolbar  .circle {
+        border-radius: 50%;
+        background-color: transparent;
+        border: 4px solid #ff4bcc;
+        
+      }
+      
+      .toolbar  .square {
+        border-radius: 0%;
+        border: 3px solid #2bff00;
+        background-color: transparent;
+        
+      }
+      
+      .toolbar  .triangle {
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 40px solid ;
+        border-bottom-color: #78dbff;
+      }
+      
+      .toolbar  .delete-button {
+        background-color: #f44336;
+        border-radius: 20%;
+        text-align: center;
+      }
+      
+      .toolbar  .delete-button:hover {
+        background-color: #d32f2f;
+      }
+      
+      .local-stream-video{
+        margin-left: 60px;
+        width: 490px;
+      }
+      video  .arrow {
+        
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        background-color: transparent;
+        border: 5px solid #ff0000;
+      }
+      
+      video  .circle {
+        border-radius: 50%;
+        background-color: transparent;
+        border: 2px solid #ff4bcc;
+      }
+      
+      video  .square {
+        border-radius: 0%;
+        border: 2px solid #00ff48;
+        background-color: transparent;
+      }
+      
+      video  .triangle {
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-bottom: 30px solid transparent;
+        border-top: none;
+        border-bottom-color: #0066ff;
+    
+      }
+        .toolbar .arrow,
+        .toolbar .circle,
+        .toolbar .square,
+        .toolbar .triangle {
+        margin: 10px 0px;
+        cursor: pointer;
+        }
+
+        .video-container .dragged-element {
+          position: absolute;
+          pointer-events: none;
+        }

@@ -187,9 +187,27 @@ function handle_close(connection){
 			}
 		}
 }
+function handle_drop_object(data){
+	/* Get the user details */
+	var conn = users[data.name];
+	if (conn != null) {
+		/* Send the response back to peer user */
+		sendTo(conn, { "type": "server_drop_object", "data": data.data });
+	}
+}
+function handle_delete_object(data){
+	/* Get the user details */
+	var conn = users[data.name];
+	if (conn != null) {
+		/* Send the response back to peer user */
+		sendTo(conn, { "type": "server_delete_object", "data": data.data });
+	}
+}
+
 /* function to send the userlist */
 function sendUpdatedUserList(conn, message) {
 	conn.send(JSON.stringify({ "type": "server_user_list", "name": message }));
+	console.log("User List updated is : ",message)
 }
 
 /* function to send the message */
@@ -278,8 +296,18 @@ wss.on('connection', function (connection) {
 					handle_quit(data,connection)
 					console.log("quitting successfully handled")
 					break
-	
-					//default 
+
+				case "drop_object":
+					handle_drop_object(data)
+					console.log("drop object successfully handled")
+					break
+
+				case "delete_object":
+					handle_delete_object(data)
+					console.log("delete object successfully handled")
+					break
+
+				//default 
 				default:
 					sendTo(connection, { type: "server_error", message: "Unrecognized command: " + data.type })
 					console.log("error handling the message")

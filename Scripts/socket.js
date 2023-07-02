@@ -78,12 +78,22 @@ connection.onmessage= function (message) {
             console.log("server_already_in_room")
             break  
 
+        case "server_drop_object":
+            drop_object(data.data)
+            console.log("drop_object")
+            break
+
+        case "server_delete_object":
+            delete_object()
+            console.log("delete_object")
+            break
+
         case "server_error":
             break
 
         case "server_no_user":
             break
-
+        
         default:
             break
     }

@@ -340,17 +340,28 @@ function create_videoCall_page(){
     '<div class="col-sm-3">'+ 
     '<div class="modal-dialog-video">'+
             '<div class="modal-body-video">'+
-            '<div class="overlay"><h2>Peer user</h2></div>'+
-                '<figure>'+
-                '<video class="peer_video_class" id="peer_video_frame" playsinline autoplay></video>'+
-                '</figure>'+
+                '<div class="overlay"></div>'+
+                    '<figure class="video-container">'+
+                        '<div class="toolbar">'+
+                            '<div class="arrow" id="arrow" draggable="true" ondragstart="drag(event)"></div>'+
+                            '<div class="circle" id="circle" draggable="true" ondragstart="drag(event)"></div>'+
+                            '<div class="square" id="square" draggable="true" ondragstart="drag(event)"></div>'+
+                            '<div class="triangle" id="triangle" draggable="true" ondragstart="drag(event)"></div>'+
+                            '<div class="delete-button" onclick="deleteElement()">Del</div>'+
+                        '</div>'+
+                        '<div id="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">'+
+                            '<video id="peer_video_frame" autoplay></video>'+
+                        '</div>'+
+                    '</figure>'+
             '</div>'+
     '</div>'+    
     '<div class="modal-dialog-video">'+
             '<div class="modal-body-video">'+
-            '<div class="overlay"><h2>client user</h2></div>'+
-                '<figure>'+
-                '<video id="client_video_frame" playsinline controls autoplay></video>'+
+            '<div class="overlay"></div>'+
+                '<figure class="local-stream-video">'+
+                    '<div id="receiving_canvas">'+
+                '<video id="client_video_frame" controls autoplay></video>'+
+                    '</div>'+
                 '<div class="button_calls">'+
                         '<div class="col-xs-1">'+
                             '<button id="hide_camera" type="button" class="btn" onclick="toggle_video()">'+
@@ -393,6 +404,7 @@ function create_videoCall_page(){
     '</div>';
     document.getElementById('messages_video').innerHTML += VideosDisplay;
 }
+
 
 //This function will activate the chat window.
 function activate_chat_window() {
