@@ -18,6 +18,11 @@ var configuration = {
     iceServers : [
         { urls: "stun:stun.1.google.com:19302"},
         {
+            urls: 'turn:openrelay.metered.ca:443',
+            credential: 'openrelayproject',
+            username: 'openrelayproject'
+        },
+        {
             urls: 'turn:openrelay.metered.ca:443?transport=tcp',
             credential: 'openrelayproject',
             username: 'openrelayproject'
