@@ -101,7 +101,7 @@ async function permission_camera_before_call(channel,name) {
     console.log('Created local peer connection object peerConnection')
     peerConnection.addEventListener('iceconnectionstatechange', e => onIceStateChange(peerConnection, e))
     current_client_stream.getTracks().forEach(track => peerConnection.addTrack(track, current_client_stream))
-    peerConnection.addEventListener('track'||'stream', gotRemoteStream)
+    peerConnection.addEventListener('track', gotRemoteStream)
     console.log('Added local stream to peerConnection')
 
     if(channel == false){
