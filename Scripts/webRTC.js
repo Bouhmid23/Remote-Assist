@@ -18,16 +18,11 @@ var configuration = {
     iceServers : [
         { urls: "stun:stun.1.google.com:19302"},
         {
-            urls: 'turn:openrelay.metered.ca:443',
-            credential: 'openrelayproject',
-            username: 'openrelayproject'
-        },
-        {
             urls: 'turn:openrelay.metered.ca:443?transport=tcp',
             credential: 'openrelayproject',
             username: 'openrelayproject'
         },
-    ],
+    ]
 }
 
 //This function will handle the data channel open callback.
@@ -88,15 +83,13 @@ async function permission_camera_before_call(channel,name) {
         })
         console.log('Received local stream')
     
-    
     const videoTracks = current_client_stream.getVideoTracks()
     const audioTracks = current_client_stream.getAudioTracks()
     if (videoTracks.length > 0) {
-        console.log(`Using video device: ${videoTracks[0].label}`)
-    }
+        console.log(`Using video device: ${videoTracks[0].label}`)}
     if (audioTracks.length > 0) {
-        console.log(`Using audio device: ${audioTracks[0].label}`)
-    }
+        console.log(`Using audio device: ${audioTracks[0].label}`)}
+
     peerConnection = new RTCPeerConnection(configuration)
     console.log('Created local peer connection object peerConnection')
     peerConnection.addEventListener('iceconnectionstatechange', e => onIceStateChange(peerConnection, e))
@@ -107,15 +100,13 @@ async function permission_camera_before_call(channel,name) {
     if(channel == false){
         console.log("Creating Answer..")
         peerConnection.ondatachannel = receiveChannelCallback
-        creating_answer() 
-    }
+        creating_answer() }
 
     if(channel == true){
         peerConnection.addEventListener('icecandidate', e => icecandidateAdded(e)) 
         console.log("Creating Offer..")
         Create_DataChannel(name)  
-        creating_offer()
-    }
+        creating_offer()}
 } catch (e) {
     alert(`getUserMedia() error: ${e.name}`)
 }}
