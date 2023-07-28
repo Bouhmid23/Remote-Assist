@@ -1,4 +1,4 @@
-var EndPoint="wss://signaling-server-keuc.onrender.com"
+var EndPoint="ws://localhost:3000"
 var connection = new WebSocket(EndPoint)
 
 //This function will check the websocket connection error.
@@ -13,6 +13,9 @@ connection.onerror= function (error) {
 connection.onopen= function () {
     console.log("connection is fine")
     setInterval(ping, 10000)
+    const styleElement = obj.find(item => item.style !== undefined);
+    const generatedCSS = generateStylesFromJSON(styleElement.style);
+    addStylesToCSSFile(generatedCSS);
 }
 
  //This function will handle all the messages from server.
@@ -55,6 +58,7 @@ connection.onmessage= function (message) {
 
         case "server_user_ready":
             user_is_ready(data.success, data.peer_name)
+            loadToolbarMembers()
             console.log("user_is_ready")
             break
 
@@ -87,6 +91,9 @@ connection.onmessage= function (message) {
             delete_object()
             console.log("delete_object")
             break
+        
+        case "server_resize_object":
+            resize_object(data.data)
 
         case "server_error":
             break
@@ -110,9 +117,9 @@ connection.onclose = function() {
     console.log("connection closed")
     // Wait for 5 seconds before trying to reconnect
     setTimeout(function() {
-      connection = new WebSocket(EndPoint)
-      connection.onopen = function() {
+        connection = new WebSocket(EndPoint)
+        connection.onopen = function() {
         console.log("connection reopened")
-      }
+    }
     }, 5000)
-  }
+}

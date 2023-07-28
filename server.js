@@ -134,16 +134,21 @@ function handle_want_to_call(data,connection){
 }
 function handle_ready(data,connection){
 	/* Get connection details */
-	var conn = users[data.name];
-	if (conn != null) {
+	var userToReceiveMessage
+	if(data.target!=null || data.target!=undefined)
+		{userToReceiveMessage=users[data.target]}
+	else
+	{userToReceiveMessage = users[data.name]}
+	
+	if (userToReceiveMessage != null) {
 		/* Update the user status with peer name*/
 		connection.otherName = data.name;
-		conn.otherName = connection.name;
+		userToReceiveMessage.otherName = connection.name;
 		map.set(data.name,'busy');
 		map.set(connection.name,'busy');
 		/* Send response to each users */
-		sendTo(conn, { "type": "server_user_ready", "success": true, "peer_name": connection.name });
-		sendTo(connection, { "type": "server_user_ready", "success": true, "peer_name": conn.name });
+		sendTo(userToReceiveMessage, { "type": "server_user_ready", "success": true, "peer_name": connection.name });
+		sendTo(connection, { "type": "server_user_ready", "success": true, "peer_name": userToReceiveMessage.name });
 		/* Send updated user list to all existing users */
 		for (var i in users) {
 			sendUpdatedUserList(users[i], [...map]);
@@ -189,18 +194,30 @@ function handle_close(connection){
 }
 function handle_drop_object(data){
 	/* Get the user details */
-	var conn = users[data.name];
-	if (conn != null) {
+	var userToReceiveObject = users[data.name];
+	if(data.target != null || data.target != undefined)
+		{userToReceiveObject=users[data.target]}
+	if (userToReceiveObject != null) {
 		/* Send the response back to peer user */
-		sendTo(conn, { "type": "server_drop_object", "data": data.data });
+		sendTo(userToReceiveObject, { "type": "server_drop_object", "data": data.data});
 	}
 }
 function handle_delete_object(data){
 	/* Get the user details */
+	var userToDeleteObject = users[data.name];
+	if(data.target != null || data.target != undefined)
+		{userToDeleteObject=users[data.target]}
+	if (userToDeleteObject != null) {
+		/* Send the response back to peer user */
+		sendTo(userToDeleteObject, { "type": "server_delete_object", "data": data.data });
+	}
+}
+function handle_resize_object(data){
+	/* Get the user details */
 	var conn = users[data.name];
 	if (conn != null) {
 		/* Send the response back to peer user */
-		sendTo(conn, { "type": "server_delete_object", "data": data.data });
+		sendTo(conn, { "type": "server_resize_object", "data": data.data });
 	}
 }
 
@@ -305,6 +322,11 @@ wss.on('connection', function (connection) {
 				case "delete_object":
 					handle_delete_object(data)
 					console.log("delete object successfully handled")
+					break
+
+				case "resize_element":
+					handle_resize_object(data)
+					console.log("resize object successfully handled")
 					break
 
 				//default 

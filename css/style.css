@@ -3,6 +3,10 @@
     height: 100%;
     padding: 0;
     margin: 0;
+    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    resize: none;
     
 }
 body {
@@ -102,6 +106,7 @@ width: 120px;
 
 .card {
     height: 100vh;
+    min-width: 250px;
 }
 
 #messages {
@@ -399,12 +404,12 @@ width: 120px;
         }
     }
     .intro-banner-vdo-play-btn .ripple:nth-child(2){
-        animation-delay:.3s;
-        -webkit-animation-delay:.3s
+        -webkit-animation-delay:.3s;
+        animation-delay:.3ss
     }
     .intro-banner-vdo-play-btn .ripple:nth-child(3){
-        animation-delay:.6s;
-        -webkit-animation-delay:.6s
+        -webkit-animation-delay:.6s;
+        animation-delay:.6ss
     }
     
 
@@ -466,14 +471,14 @@ width: 120px;
     } */
     
     #peer_video_frame {
-      width: 100%;
-      height: auto;
+      width: 465px;
+      height: 100%;
       border-radius: 2%;
     }
     #client_video_frame {
-        width: 100%;
+        width: 480px;
         border-radius: 2%;
-        height: auto;
+        height: 100%;
     }
     figure{
        width:100%;
@@ -615,20 +620,49 @@ width: 120px;
         width: 500px;
     }
     .card-footer{
-        height: 70px;
-        width: 750px;
+        width: 100%;
+        height: 10%;
         margin-top: 32px;
         border: 3px solid rgba(0,0,0,.2);
         padding: 12px 22px 12px 22px;
         border-radius: 5%;
+        position: relative;
     }
+    
     #text-chat  {
-        height: auto;
-        width: auto;
+        height: 550px;
+        max-height: 550px;
+        width: 100%;
         margin-top: 32px;
         border: 3px solid rgba(0,0,0,.2);
         padding: 12px 22px 12px 22px;
-        border-radius: 2%;
+        border-radius: 5%;
+        position: relative;
+        overflow-y: scroll;
+        overflow-x: scroll;
+    }
+    @media screen and (max-width: 1000px) {
+        #text-chat-container {
+            display: none;
+        }
+        .card-header {
+            display: none;
+        }
+        .card-footer {
+            display: none;
+        }
+        #peer_video_frame {
+            margin-top: 50px;
+            
+            width: 110%;
+            height: 100%;
+        }
+        #client_video_frame {
+            width:  110%;
+            height: 100%;
+            margin-top: 50px;
+        }
+        
     }
     
     .overlay h2 {
@@ -654,50 +688,26 @@ width: 120px;
         background-color: #ededed;
         border-radius: 5px;
         box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.53);
+        overflow-y: scroll;
+        overflow-x: scroll;
+        height: inherit;
+        width: 100px;
       }
       
-      .toolbar > div {
+      .toolbar > * {
         width: 40px;
         height: 40px;
-        margin-bottom: 10px;
+        margin-top: 10px;
         border-radius: 0%;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: move;
+        cursor: pointer;
         font-size: 20px;
         color: #ffffff;
         background-color: transparent;
-        
-        
-      }
-      
-      .toolbar  .arrow {
-        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-        background-color: transparent;
-        border: 7px  solid #ff4000;
-        
-      }
-      
-      .toolbar  .circle {
-        border-radius: 50%;
-        background-color: transparent;
-        border: 4px solid #ff4bcc;
-        
-      }
-      
-      .toolbar  .square {
-        border-radius: 0%;
-        border: 3px solid #2bff00;
-        background-color: transparent;
-        
-      }
-      
-      .toolbar  .triangle {
-        border-left: 20px solid transparent;
-        border-right: 20px solid transparent;
-        border-bottom: 40px solid ;
-        border-bottom-color: #78dbff;
+        flex: 0 0 auto;
+        margin: 10px 0px;
       }
       
       .toolbar  .delete-button {
@@ -714,44 +724,6 @@ width: 120px;
         margin-left: 60px;
         width: 490px;
       }
-      video  .arrow {
-        
-        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-        background-color: transparent;
-        border: 5px solid #ff0000;
-      }
       
-      video  .circle {
-        border-radius: 50%;
-        background-color: transparent;
-        border: 2px solid #ff4bcc;
-      }
-      
-      video  .square {
-        border-radius: 0%;
-        border: 2px solid #00ff48;
-        background-color: transparent;
-      }
-      
-      video  .triangle {
-        width: 0;
-        height: 0;
-        border-left: 20px solid transparent;
-        border-right: 20px solid transparent;
-        border-bottom: 30px solid transparent;
-        border-top: none;
-        border-bottom-color: #0066ff;
-    
-      }
-        .toolbar .arrow,
-        .toolbar .circle,
-        .toolbar .square,
-        .toolbar .triangle {
-        margin: 10px 0px;
-        cursor: pointer;
-        }
 
-        .video-container .dragged-element {
-          position: absolute;
-          pointer-events: none;
-        }
+        

@@ -342,12 +342,9 @@ function create_videoCall_page(){
             '<div class="modal-body-video">'+
                 '<div class="overlay"></div>'+
                     '<figure class="video-container">'+
-                        '<div class="toolbar">'+
-                            '<div class="arrow" id="arrow" draggable="true" ondragstart="drag(event)"></div>'+
-                            '<div class="circle" id="circle" draggable="true" ondragstart="drag(event)"></div>'+
-                            '<div class="square" id="square" draggable="true" ondragstart="drag(event)"></div>'+
-                            '<div class="triangle" id="triangle" draggable="true" ondragstart="drag(event)"></div>'+
-                            '<div class="delete-button" onclick="deleteElement()">Del</div>'+
+                        '<div class="toolbar" id="toolbar">'+
+                            '<button class="delete-button" onclick="deleteElement()">Sup</button>'+
+                        
                         '</div>'+
                         '<div id="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">'+
                             '<video id="peer_video_frame" autoplay></video>'+
@@ -378,7 +375,7 @@ function create_videoCall_page(){
             '</div>'+
     '</div>'+
     '</div>'+
-    '<div class="col-sm-6 offset-md-2">'+
+    '<div id = "text-chat-container" class="col-sm-6 offset-md-2">'+
     '<div id="text-chat">'+
     '</div>'+
     '<div class="card-footer">'+
