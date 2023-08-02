@@ -1,4 +1,4 @@
-var EndPoint="ws://localhost:3000"
+var EndPoint="wss://signaling-server-keuc.onrender.com"
 var connection = new WebSocket(EndPoint)
 
 //This function will check the websocket connection error.
@@ -13,9 +13,9 @@ connection.onerror= function (error) {
 connection.onopen= function () {
     console.log("connection is fine")
     setInterval(ping, 10000)
-    const styleElement = obj.find(item => item.style !== undefined);
-    const generatedCSS = generateStylesFromJSON(styleElement.style);
-    addStylesToCSSFile(generatedCSS);
+    const styleElement = obj.find(item => item.style !== undefined)
+    const generatedCSS = generateStylesFromJSON(styleElement.style)
+    addStylesToCSSFile(generatedCSS)
 }
 
  //This function will handle all the messages from server.
