@@ -347,7 +347,7 @@ function create_videoCall_page(){
                         
                         '</div>'+
                         '<div id="canvas" ondrop="drop(event)" ondragover="allowDrop(event)">'+
-                            '<video id="peer_video_frame" autoplay></video>'+
+                            '<video id="peer_video_frame" width="160" height="120" autoplay></video>'+
                         '</div>'+
                     '</figure>'+
             '</div>'+
@@ -357,7 +357,7 @@ function create_videoCall_page(){
             '<div class="overlay"></div>'+
                 '<figure class="local-stream-video">'+
                     '<div id="receiving_canvas">'+
-                '<video id="client_video_frame" controls autoplay></video>'+
+                '<video id="client_video_frame" width="160" height="120" controls autoplay></video>'+
                     '</div>'+
                 '<div class="button_calls">'+
                         '<div class="col-xs-1">'+

@@ -104,7 +104,11 @@ function handle_busy(data){
 	}
 }
 function handle_want_to_call(data,connection){
-	var peerToCall = users[data.name];
+	var peerToCall
+	if(data.target!=null || data.target!=undefined)
+		{peerToCall=users[data.target]}
+	else
+	{peerToCall = users[data.name]}
 					if (peerToCall != null) {
 						if((peerToCall.otherName != null) && map.get(data.name) == "busy"){
 							//User in room, User can't accept the offer 
@@ -275,6 +279,8 @@ wss.on('connection', function (connection) {
 					//Once offer and answer is exchange, ready for a room 
 				case "ready":
 					handle_ready(data,connection)
+
+					
 					console.log("ready for call successfully handled")
 					break
 	

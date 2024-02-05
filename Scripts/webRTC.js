@@ -1,4 +1,3 @@
-
 // WebRTC 
 var peerConnection
 var Send_dataChannel, connectedUser, Receive_dataChannel
@@ -18,16 +17,21 @@ var configuration = {
     iceServers : [
         { urls: "stun:stun.1.google.com:19302"},
         {
-            urls: 'turn:openrelay.metered.ca:443',
-            credential: 'openrelayproject',
-            username: 'openrelayproject'
+            urls: "turn:relay.opkodelabs.com:3478",
+            credential: "test123",
+            username: "test"
         },
         {
-            urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-            credential: 'openrelayproject',
-            username: 'openrelayproject'
+            urls: "turns:freestun.net:5350",
+            credential: "free",
+            username: "free"
         },
-    ]
+    ],
+    bundlePolicy : "balanced",
+    rtcpMuxPolicy : "negociate",
+    iceTransportPolicy : "all"
+
+
 }
 
 //This function will handle the data channel open callback.
@@ -98,7 +102,8 @@ async function permission_camera_before_call(channel,name) {
     peerConnection = new RTCPeerConnection(configuration)
     console.log('Created local peer connection object peerConnection')
     peerConnection.addEventListener('iceconnectionstatechange', e => onIceStateChange(peerConnection, e))
-    current_client_stream.getTracks().forEach(track => peerConnection.addTrack(track, current_client_stream))
+    current_client_stream.getTracks().forEach(
+        track => peerConnection.addTrack(track, current_client_stream))
     peerConnection.addEventListener('track', gotRemoteStream)
     console.log('Added local stream to peerConnection')
 
@@ -117,14 +122,13 @@ async function permission_camera_before_call(channel,name) {
 }}
 //This function will handle when when we got ice candidate from another user.
  async function onCandidate(candidate) {
-    if((candidate != null || candidate != undefined) && peerConnection!=undefined ){
+    if((candidate != null || candidate != undefined && candidate!='') && peerConnection!=undefined ){
         console.log(candidate + typeof candidate)
         try {
             await (peerConnection.addIceCandidate({"candidate":candidate.candidate,
                                                     "sdpMid":candidate.sdpMid,
-                                                    "sdpMLineIndex":candidate.sdpMLineIndex}).then(()=>{
-                onAddIceCandidateSuccess(peerConnection)
-            }))
+                                                    "sdpMLineIndex":candidate.sdpMLineIndex})
+                                                    .then(()=>{onAddIceCandidateSuccess(peerConnection)}))
         } catch (e) {
             onAddIceCandidateError(peerConnection, e)
         }    
@@ -221,10 +225,11 @@ function Create_DataChannel(name) {
 async function creating_offer() {
     document.getElementById('dynamic_progress_text').setAttribute('data-loading-text', "Requesting with user.. Please wait..")
     try {
-            await peerConnection.createOffer(offerOptions).then(async(offer)=>{
+        
+        await peerConnection.createOffer(offerOptions).then(async(offer)=>{
             
-            console.log("offer created : "+ offer.sdp+", is unified-plan")
-            await onCreateOfferSuccess(offer)
+        console.log("offer created : "+ offer.sdp+", is unified-plan")
+        await onCreateOfferSuccess(offer)
         })
     } catch (e) {
         onCreateSessionDescriptionError(e)

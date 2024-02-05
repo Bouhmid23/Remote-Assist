@@ -1,4 +1,4 @@
-var EndPoint="wss://signaling-server-keuc.onrender.com"
+var EndPoint="wss://signalling.taskflow.cloud"
 var connection = new WebSocket(EndPoint)
 
 //This function will check the websocket connection error.
