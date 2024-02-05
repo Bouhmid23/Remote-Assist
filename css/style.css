@@ -9,6 +9,9 @@
     resize: none;
     
 }
+body{
+    overflow: hidden;
+}
 body {
     font-family: 'Segoe UI', Helvetica, 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Verdana, sans-serif;
 }

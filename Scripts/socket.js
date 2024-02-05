@@ -1,4 +1,4 @@
-var EndPoint="wss://signalling.taskflow.cloud"
+var EndPoint="ws://192.168.3.71:3000"
 var connection = new WebSocket(EndPoint)
 
 //This function will check the websocket connection error.
